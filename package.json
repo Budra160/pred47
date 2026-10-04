@@ -1,7 +1,6 @@
 {
   "name": "predavanje47git",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "vite",
@@ -21,5 +20,14 @@
     "globals": "^17.13.0",
     "prettier": "^3.9.9",
     "vite": "^8.3.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Budra160/pred47.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Budra160/pred47/issues"
+  },
+  "homepage": "https://github.com/Budra160/pred47#readme",
+  "description": ""
 }
