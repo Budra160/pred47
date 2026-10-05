@@ -1,7 +1,7 @@
 import { Sekcija } from "./components/sekcija.js";
 import { OdabranaOprema } from "./components/odabrana-oprema.js";
 import { Oprema } from "./components/oprema.js";
-import { dohvatiOpremu, patchOpremu } from "./services/api.js";
+import { dohvatiOpremu, patchOpremu, deleteOpremu } from "./services/api.js";
 import { stvoriModal } from "./components/modal.js";
 
 const main = document.getElementById("glavni-sadrzaj");
@@ -34,7 +34,6 @@ katalogWrapper.addEventListener("click", (e) => {
   e.stopImmediatePropagation();
 
   const gumb = e.target.closest(".gumb");
-  const kartica = e.target.closest(".kartica");
   let forma;
   if (!gumb) return;
 
@@ -43,7 +42,6 @@ katalogWrapper.addEventListener("click", (e) => {
   );
   if (gumb.dataset.action === "dodaj") {
     selectOprema.push(predmet);
-    console.log(selectOprema, gumb);
 
     gumb.dataset.action = "ukloni";
     gumb.innerHTML = "Ukloni";
@@ -58,40 +56,16 @@ katalogWrapper.addEventListener("click", (e) => {
   } else if (gumb.dataset.action === "patch") {
     katalogWrapper.innerHTML += stvoriModal();
     forma = document.getElementById("modal");
-    if(!forma) return
-    forma.addEventListener("click", (e) => {
-      e.preventDefault();
+    if (!forma) return;
+    patchAction(forma, predmet);
+  } else if (gumb.dataset.action === "delete") {
+    selectOprema = selectOprema.filter((element) => element.id !== predmet.id);
 
-      let title;
-      let subGumb = e.target.closest(".gumb")
-      if(!subGumb) return;
-      if(subGumb.type === "submit")
-      {
-        title = document.getElementById("title").value.trim();
-        if(title == "")
-            alert("upišite vrijednost")
-        else
-        {
-            predmet.title = title;
-            oprema = oprema.filter((element) => element.id !== predmet.id);
-            oprema.unshift(predmet);
-            console.log(oprema);
-            katalogWrapper.innerHTML = ""
-            oprema.forEach((element) => {
-                katalogWrapper.innerHTML += Oprema(element);
-                });
-        }
-      }
-      else if(subGumb.id === "exit")
-        document.querySelector(".modal-wrapper").remove();
-      else{
-        return
-      }
-    });
-
-    
+    deleteOpremu(predmet);
+    oprema = oprema.filter((element) => element.id !== predmet.id);
+    katalogWrapper.innerHTML = "";
+    refresh(oprema);
   }
-
   dodajOdabranuOpremu();
 });
 
@@ -101,4 +75,36 @@ function dodajOdabranuOpremu() {
   if (!selectOprema) return;
 
   odabranoWrapper.innerHTML = OdabranaOprema(selectOprema);
+}
+
+function refresh(array) {
+  katalogWrapper.innerHTML = "";
+  array.forEach((element) => {
+    katalogWrapper.innerHTML += Oprema(element);
+  });
+}
+
+function patchAction(form, item) {
+  form.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    let title;
+    let subGumb = e.target.closest(".gumb");
+    if (!subGumb) return;
+    if (subGumb.type === "submit") {
+      title = document.getElementById("title").value.trim();
+      if (title == "") alert("upišite vrijednost");
+      else {
+        patchOpremu(item);
+        item.title = title;
+        oprema = oprema.filter((element) => element.id !== item.id);
+        oprema.unshift(item);
+        refresh(oprema);
+      }
+    } else if (subGumb.id === "exit")
+      document.querySelector(".modal-wrapper").remove();
+    else {
+      return;
+    }
+  });
 }

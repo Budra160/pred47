@@ -15,7 +15,7 @@ export function stvoriModal() {
                         >
                     </div>
                     ${Button("Promjeni naslov", "", { type: "submit" })}
-                    ${Button("Exit", "", { id: "exit", type:"button" })}
+                    ${Button("Exit", "", { id: "exit", type: "button" })}
                 </form>
                 
             </div>
